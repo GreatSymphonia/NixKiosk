@@ -1,3 +1,4 @@
 result/*
 flake.lock
 nixos-kiosk-lanets.iso
+nixos-kiosk-lanets-*.iso
