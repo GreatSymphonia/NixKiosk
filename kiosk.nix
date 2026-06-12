@@ -45,7 +45,7 @@
     program = "${pkgs.writeShellScript "firefox-kiosk" ''
       exec ${pkgs.firefox}/bin/firefox \
         --kiosk \
-        https://kiosk.lanets.ca
+        https://ctfd.summercamp.dciets.com/scoreboard
     ''}";
   };
 
