@@ -36,19 +36,10 @@ EOF
 
     export MOZ_ENABLE_WAYLAND=1
 
-    ${pkgs.firefox}/bin/firefox \
+    exec ${pkgs.firefox}/bin/firefox \
       --profile "$PROFILE_DIR" \
       --kiosk \
-      "${kioskUrl}" &
-
-    FIREFOX_PID=$!
-
-    while kill -0 "$FIREFOX_PID" 2>/dev/null; do
-      sleep 10
-      ${pkgs.wtype}/bin/wtype -k F5 || true
-    done
-
-    wait "$FIREFOX_PID"
+      "${kioskUrl}"
   '';
 in
 {
@@ -79,11 +70,13 @@ in
       "input"
       "networkmanager"
     ];
+
+    # ISO kiosk local, pas destiné à être un compte interactif sécurisé.
     password = "";
   };
 
   #
-  # Graphics / display
+  # Graphiques / Wayland
   #
   hardware.graphics.enable = true;
   services.xserver.videoDrivers = [
@@ -110,7 +103,7 @@ in
   fonts.fontconfig.enable = true;
 
   #
-  # Printing
+  # Impression / CUPS
   #
   services.printing = {
     enable = true;
@@ -122,7 +115,13 @@ in
   };
 
   #
-  # Compatibility for old Brother binaries/scripts.
+  # Compatibilité Brother.
+  #
+  # Plusieurs vieux scripts/binaires Brother cherchent encore directement :
+  #
+  #   /opt/brother/PTouch/ql570/...
+  #
+  # même si le package est dans /nix/store.
   #
   systemd.tmpfiles.rules = [
     "d /opt 0755 root root - -"
@@ -130,7 +129,13 @@ in
   ];
 
   #
-  # Declaratively create the CUPS queue at boot.
+  # Configuration automatique de la première Brother QL-570 détectée.
+  #
+  # On évite de hardcoder :
+  #
+  #   usb://Brother/QL-570?serial=...
+  #
+  # Le service cherche plutôt la première imprimante USB QL-570 disponible.
   #
   systemd.services.configure-ql570-printer = {
     description = "Configure first detected Brother QL-570 CUPS queue";
@@ -155,7 +160,7 @@ in
     serviceConfig = {
       Type = "oneshot";
 
-      # If the printer is not plugged in yet, keep retrying.
+      # Si l'imprimante n'est pas branchée au boot, on réessaie.
       Restart = "on-failure";
       RestartSec = "5s";
     };
@@ -197,7 +202,7 @@ in
   };
 
   #
-  # Cage + Firefox kiosk
+  # Firefox kiosk via Cage
   #
   services.cage = {
     enable = true;
@@ -225,7 +230,7 @@ in
   };
 
   #
-  # Debug/admin access
+  # Accès admin/debug
   #
   services.openssh = {
     enable = true;
@@ -239,11 +244,9 @@ in
   environment.systemPackages = with pkgs; [
     firefox
     cage
-    wtype
     cups
     usbutils
     vim
-    git
   ];
 
   services.logind.settings.Login = {
