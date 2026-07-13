@@ -30,8 +30,19 @@ user_pref("browser.startup.homepage", "${kioskUrl}");
 user_pref("browser.sessionstore.resume_from_crash", false);
 user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
 user_pref("datareporting.policy.dataSubmissionEnabled", false);
-user_pref("print.always_print_silent", true);
+
 user_pref("print_printer", "${printerName}");
+user_pref("print.save_print_settings", false);
+
+user_pref("print.printer_QL-570.print_margin_top", "0");
+user_pref("print.printer_QL-570.print_margin_bottom", "0");
+user_pref("print.printer_QL-570.print_margin_left", "0");
+user_pref("print.printer_QL-570.print_margin_right", "0");
+
+user_pref("print.printer_QL-570.print_unwriteable_margin_top", "0");
+user_pref("print.printer_QL-570.print_unwriteable_margin_bottom", "0");
+user_pref("print.printer_QL-570.print_unwriteable_margin_left", "0");
+user_pref("print.printer_QL-570.print_unwriteable_margin_right", "0");
 EOF
 
     export MOZ_ENABLE_WAYLAND=1
