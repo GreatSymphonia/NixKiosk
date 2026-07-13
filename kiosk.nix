@@ -32,7 +32,10 @@ user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
 user_pref("datareporting.policy.dataSubmissionEnabled", false);
 
 user_pref("print_printer", "${printerName}");
-user_pref("print.save_print_settings", false);
+user_pref("print.save_print_settings", true);
+
+user_pref("print.print_range", 1);
+user_pref("print.printer_${printerName}.print_range", 1);
 
 user_pref("print.printer_QL-570.print_margin_top", "0");
 user_pref("print.printer_QL-570.print_margin_bottom", "0");
@@ -49,7 +52,6 @@ EOF
 
     exec ${pkgs.firefox}/bin/firefox \
       --profile "$PROFILE_DIR" \
-      --kiosk \
       "${kioskUrl}"
   '';
 in
