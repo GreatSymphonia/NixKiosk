@@ -11,7 +11,7 @@ flash:
 	@echo "About to flash $(ISO) to $(DEVICE)"
 	@echo "Press Ctrl+C within 5 seconds to abort..."
 	@sleep 5
-	sudo dd if=./$(ISO) of=$(DEVICE) bs=4M status=progress conv=fsync
+	sudo dd if=./$(ISO) of=$(DEVICE) bs=4M status=progress oflag=sync conv=fsync
 
 clean:
 	rm -rf result
