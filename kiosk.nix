@@ -12,11 +12,10 @@ let
     };
 
   printerName = "QL-570";
-  printerUri = "usb://Brother/QL-570?serial=D3Z971952";
   printerModel = "brother_ql570_printer_en.ppd";
   printerPageSize = "62x29";
 
-  kioskUrl = "https://ctfd.summercamp.dciets.com/scoreboard";
+  kioskUrl = "https://lanets.ca";
 
   firefoxKiosk = pkgs.writeShellScript "firefox-kiosk" ''
     set -eu
@@ -134,28 +133,55 @@ in
   # Declaratively create the CUPS queue at boot.
   #
   systemd.services.configure-ql570-printer = {
-    description = "Configure Brother QL-570 CUPS queue";
+    description = "Configure first detected Brother QL-570 CUPS queue";
     wantedBy = [ "multi-user.target" ];
-    after = [ "cups.service" ];
-    wants = [ "cups.service" ];
+    after = [
+      "cups.service"
+      "systemd-udev-settle.service"
+    ];
+    wants = [
+      "cups.service"
+      "systemd-udev-settle.service"
+    ];
 
     path = [
       pkgs.cups
       pkgs.coreutils
+      pkgs.gnugrep
+      pkgs.gawk
+      pkgs.gnused
     ];
 
     serviceConfig = {
       Type = "oneshot";
-      RemainAfterExit = true;
+
+      # If the printer is not plugged in yet, keep retrying.
+      Restart = "on-failure";
+      RestartSec = "5s";
     };
 
     script = ''
       set -eu
 
+      echo "Looking for Brother QL-570 USB printer..."
+
+      PRINTER_URI="$(
+        lpinfo -v \
+          | grep -m1 '^direct usb://Brother/QL-570' \
+          | awk '{print $2}'
+      )"
+
+      if [ -z "$PRINTER_URI" ]; then
+        echo "No Brother QL-570 USB printer found yet."
+        exit 1
+      fi
+
+      echo "Found Brother QL-570 at: $PRINTER_URI"
+
       lpadmin \
         -p ${printerName} \
         -E \
-        -v '${printerUri}' \
+        -v "$PRINTER_URI" \
         -m '${printerModel}' \
         -o PageSize=${printerPageSize} \
         -o BrCutAtEnd=ON \
@@ -165,6 +191,8 @@ in
 
       cupsaccept ${printerName}
       cupsenable ${printerName}
+
+      echo "Configured CUPS queue ${printerName} with URI $PRINTER_URI"
     '';
   };
 
