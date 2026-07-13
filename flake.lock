@@ -1,0 +1,41 @@
+{
+  "nodes": {
+    "brother-ql570-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1783959164,
+        "narHash": "sha256-+2sL8/9eRKrTKvpc0YWpoWfWsAMkKPEiPzj/uiVcI7I=",
+        "path": "/var/lib/nixos-vendor/brother-ql570",
+        "type": "path"
+      },
+      "original": {
+        "path": "/var/lib/nixos-vendor/brother-ql570",
+        "type": "path"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1783856661,
+        "narHash": "sha256-ZGP04e+Q6WyQJGA9ZvI5CL6+heGQldbAG9U1T9NGvmU=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "569d578509928497eddc3fdbf94a799027050be4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-26.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "brother-ql570-src": "brother-ql570-src",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
