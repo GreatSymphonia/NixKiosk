@@ -17,36 +17,31 @@ let
 
   kioskUrl = "https://lanets.ca";
 
-  firefoxKiosk = pkgs.writeShellScript "firefox-kiosk" ''
+  firefoxKiosk = pkgs.writeShellScript "firefox-session" ''
     set -eu
 
-    PROFILE_DIR="$HOME/firefox-kiosk-profile"
+    PROFILE_DIR="$HOME/firefox-session-profile"
 
+    #
+    # Fresh Firefox session on every launch.
+    #
+    rm -rf "$PROFILE_DIR"
     mkdir -p "$PROFILE_DIR"
 
     cat > "$PROFILE_DIR/user.js" <<EOF
-user_pref("browser.shell.checkDefaultBrowser", false);
-user_pref("browser.startup.homepage", "${kioskUrl}");
-user_pref("browser.sessionstore.resume_from_crash", false);
-user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
-user_pref("datareporting.policy.dataSubmissionEnabled", false);
+  user_pref("browser.shell.checkDefaultBrowser", false);
+  user_pref("browser.startup.homepage", "${kioskUrl}");
+  user_pref("browser.sessionstore.resume_from_crash", false);
+  user_pref("browser.sessionstore.max_resumed_crashes", 0);
+  user_pref("browser.warnOnQuit", false);
+  user_pref("browser.tabs.warnOnClose", false);
+  user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
+  user_pref("datareporting.policy.dataSubmissionEnabled", false);
 
-user_pref("print_printer", "${printerName}");
-user_pref("print.save_print_settings", true);
-
-user_pref("print.print_range", 1);
-user_pref("print.printer_${printerName}.print_range", 1);
-
-user_pref("print.printer_QL-570.print_margin_top", "0");
-user_pref("print.printer_QL-570.print_margin_bottom", "0");
-user_pref("print.printer_QL-570.print_margin_left", "0");
-user_pref("print.printer_QL-570.print_margin_right", "0");
-
-user_pref("print.printer_QL-570.print_unwriteable_margin_top", "0");
-user_pref("print.printer_QL-570.print_unwriteable_margin_bottom", "0");
-user_pref("print.printer_QL-570.print_unwriteable_margin_left", "0");
-user_pref("print.printer_QL-570.print_unwriteable_margin_right", "0");
-EOF
+  user_pref("print.always_print_silent", false);
+  user_pref("print_printer", "${printerName}");
+  user_pref("print.save_print_settings", true);
+  EOF
 
     export MOZ_ENABLE_WAYLAND=1
 
