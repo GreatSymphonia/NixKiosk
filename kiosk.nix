@@ -1,5 +1,4 @@
 { pkgs
-, lib
 , nixpkgs
 , brotherQl570Sources
 , ...
@@ -15,7 +14,7 @@ let
   printerModel = "brother_ql570_printer_en.ppd";
   printerPageSize = "62x29";
 
-  kioskUrl = "https://lanets.ca";
+  kioskUrl = "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=oyeMGL-GiEmclAJadfzw0RXX5hvDK6FBphzqQ6blWrJURE5PUTdDR0laM0VLUlJETlhKMEdJSEYxWS4u";
 
   firefoxKiosk = pkgs.writeShellScript "firefox-session" ''
     set -eu
